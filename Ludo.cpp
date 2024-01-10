@@ -18,6 +18,7 @@ Ludo::Ludo(QWidget *parent)
     QGraphicsPixmapItem* pieceBlue1 = new QGraphicsPixmapItem(pieceBlue);
     pieceBlue1->setPos(97, 457);
     pieceBlue1->setFlag(QGraphicsItem::ItemIsMovable);
+    pieceBlue1->setFlag(QGraphicsItem::ItemIsSelectable);
     graphicsSceneBoard->addItem(pieceBlue1);
     
 

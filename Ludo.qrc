@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="Ludo">
+    <qresource prefix="/Ludo">
+        <file>resource/board.jfif</file>
+        <file>resource/piece_blue/piece_blue.png</file>
     </qresource>
 </RCC>

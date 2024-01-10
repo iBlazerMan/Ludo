@@ -5,6 +5,9 @@ Ludo::Ludo(QWidget *parent)
     , ui(new Ui::LudoClass())
 {
     ui->setupUi(this);
+    
+
+    
 }
 
 Ludo::~Ludo()

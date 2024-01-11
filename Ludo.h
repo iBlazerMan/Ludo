@@ -6,6 +6,8 @@
 #include <QGraphicsPixmapItem>
 #include "ui_Ludo.h"
 
+#include "piece.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class LudoClass; };
 QT_END_NAMESPACE

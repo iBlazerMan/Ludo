@@ -2,5 +2,6 @@
     <qresource prefix="/Ludo">
         <file>resource/board.jfif</file>
         <file>resource/piece_blue/piece_blue.png</file>
+        <file>resource/dice/diceIso.png</file>
     </qresource>
 </RCC>

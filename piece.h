@@ -11,7 +11,10 @@ class piece : public QGraphicsPixmapItem {
 	ludoConstants::status status;
 
 public:
+	
+
 	using QGraphicsPixmapItem::QGraphicsPixmapItem;
+	static QGraphicsPixmapItem* promptDot;
 	piece(const QPixmap& icon);
 
 	void setIndex(const int index);
@@ -22,11 +25,15 @@ public:
 	int getMoveRolled() const;
 	ludoConstants::status getStatus() const;
 
+	
 	// set to pure virtual method later
+	/*
 	virtual void checkJump();
 	virtual void setToSpawn(const std::vector<piece> pieces);
+	*/
 
 protected:
+	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	// override mouse release and implement snapping into position logic
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 

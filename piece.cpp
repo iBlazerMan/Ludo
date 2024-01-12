@@ -1,10 +1,19 @@
 #include "piece.h"
 
 piece::piece(const QPixmap& icon) :
-	QGraphicsPixmapItem{ icon } {};
+	QGraphicsPixmapItem{icon} {
+	index = 0;
+	moveRolled = 0;
+	status = ludoConstants::status::GROUNDED;
+
+};
 
 
 void piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
+
+	// hide prompt after movement
+	promptDot->setVisible(false);
+
 	// get mouse release point
 	QPointF release = this->pos();
 
@@ -29,6 +38,14 @@ void piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 
 	// parent class implementation
 	QGraphicsPixmapItem::mouseReleaseEvent(event);
+}
+
+void piece::mousePressEvent(QGraphicsSceneMouseEvent* event) {
+	// make prompt visible
+	promptDot->setVisible(true);
+
+	// parent class implementation
+	QGraphicsPixmapItem::mousePressEvent(event);
 }
 
 void piece::setIndex(const int index) {

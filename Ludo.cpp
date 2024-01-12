@@ -22,11 +22,22 @@ Ludo::Ludo(QWidget *parent)
     buttonDice->setStyleSheet("background-color: transparent; border: none;");
     buttonDice->setCursor(Qt::PointingHandCursor);
 
-    connect(buttonDice, &QPushButton::clicked, qApp, &QApplication::quit);
-    
     // add dice to the board
     diceProxy = graphicsSceneBoard->addWidget(buttonDice);
     diceProxy->setPos(210, 210);
+
+    // create dot prompt
+    QGraphicsPixmapItem* promptDot = new QGraphicsPixmapItem(QPixmap(":/Ludo/resource/dotBlack.png").scaled
+        (10, 10, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    promptDot->setPos(200, 200);
+    graphicsSceneBoard->addItem(promptDot);
+    promptDot->setOpacity(0.6);
+    promptDot->setVisible(false);
+
+    // add dot prompt pointer to piece class:
+    piece::promptDot = promptDot;
+
+    connect(buttonDice, &QPushButton::clicked, this, &Ludo::playerRound);
 
     // smooth rendering
     ui->graphicsViewBoard->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -34,9 +45,9 @@ Ludo::Ludo(QWidget *parent)
     // set the scene to the graphics view
     ui->graphicsViewBoard->setScene(graphicsSceneBoard);
     
-    // adding blue piece
-    QPixmap pieceBlueOriginal(":/Ludo/resource/piece_blue/piece_blue.png");
-    QPixmap pieceBlue = pieceBlueOriginal.scaled(21, 21, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    // TESTING: adding blue piece
+    QPixmap pieceBlue = QPixmap(":/Ludo/resource/piece_blue/piece_blue.png").scaled
+        (21, 21, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     piece* pieceBlue1 = new piece(pieceBlue);
     pieceBlue1->setPos(87, 448);
     pieceBlue1->setFlag(QGraphicsItem::ItemIsMovable);
@@ -60,14 +71,22 @@ void Ludo::playerRound() {
     bool moveAvailable = false;
     bool takeoffAvailable = true;
 
-    // FINISH TOMORROW
     // iterate through the piece vector and check if any pieces are available to move
     for (piece* p : playerPieces) {
-        if ((p->getStatus() != ludoConstants::status::COMPLETED)) {
+        // enable all pieces that can move
+        if (p->getStatus() != ludoConstants::status::COMPLETED && 
+            p->getStatus() != ludoConstants::status::GROUNDED) {
             // set piece to movable and update the 
             p->setFlag(QGraphicsItem::ItemIsMovable);
             p->setMoveRolled(numRolled);
             // set movement available to true
+            moveAvailable = true;
+        }
+        // enable takeoff when 6 is rolled
+        else if (p->getStatus() == ludoConstants::status::GROUNDED &&
+            numRolled == 6 && takeoffAvailable) {
+            p->setFlag(QGraphicsItem::ItemIsMovable);
+            takeoffAvailable = false;
             moveAvailable = true;
         }
     }

@@ -3,5 +3,6 @@
         <file>resource/board.jfif</file>
         <file>resource/piece_blue/piece_blue.png</file>
         <file>resource/dice/diceIso.png</file>
+        <file>resource/dotBlack.png</file>
     </qresource>
 </RCC>

@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
+#include <QTimer>
 #include "ui_Ludo.h"
 
 #include "piece.h"
@@ -24,9 +25,16 @@ public:
     Ludo(QWidget *parent = nullptr);
     ~Ludo();
 
+signals:
+    void endRound();
+
 public slots:
     void playerRound();
+    // TESTING
+    void reset();
 
+private slots:
+    void delayedEndRound();
 
 private:
     Ui::LudoClass *ui;
@@ -35,7 +43,5 @@ private:
 
     QGraphicsScene* graphicsSceneBoard;
     QGraphicsProxyWidget* diceProxy;
-
-    
 
 };

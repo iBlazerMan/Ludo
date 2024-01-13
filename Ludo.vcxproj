@@ -91,7 +91,7 @@
   <ItemGroup>
     <ClCompile Include="constants.cpp" />
     <ClCompile Include="piece.cpp" />
-    <ClCompile Include="piece.h" />
+    <QtMoc Include="piece.h" />
     <ClCompile Include="tile.cpp" />
     <QtRcc Include="Ludo.qrc" />
     <QtUic Include="Ludo.ui" />

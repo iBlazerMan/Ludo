@@ -6,8 +6,6 @@ Ludo::Ludo(QWidget *parent)
 {
     ui->setupUi(this);
 
-    
-
     // initialize graphics scene to display the board and pieces
     graphicsSceneBoard = new QGraphicsScene(this);
     // set size and background of the board
@@ -46,13 +44,16 @@ Ludo::Ludo(QWidget *parent)
     ui->graphicsViewBoard->setScene(graphicsSceneBoard);
     
     // TESTING: adding blue piece
-    QPixmap pieceBlue = QPixmap(":/Ludo/resource/piece_blue/piece_blue.png").scaled
+    QPixmap pieceBlueIcon = QPixmap(":/Ludo/resource/piece_blue/piece_blue.png").scaled
         (21, 21, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    piece* pieceBlue1 = new piece(pieceBlue);
+    pieceBlue* pieceBlue1 = new pieceBlue(pieceBlueIcon);
     pieceBlue1->setPos(87, 448);
-    pieceBlue1->setFlag(QGraphicsItem::ItemIsMovable);
+    pieceBlue1->setStatus(ludoConstants::status::GROUNDED);
     graphicsSceneBoard->addItem(pieceBlue1);   
-    
+    piecesBlue.push_back(pieceBlue1);
+
+    connect(this, &Ludo::endRound, this, &Ludo::reset);
+    connect(pieceBlue1, &piece::endRound, this, &Ludo::reset);
 }
 
 Ludo::~Ludo()
@@ -64,6 +65,8 @@ void Ludo::playerRound() {
     // hide dice
     diceProxy->hide();
 
+    // TODO: Change this to the selector
+    // 
     std::vector<piece*>& playerPieces = piecesBlue;
 
     // roll a random number between 1 and 6
@@ -91,4 +94,21 @@ void Ludo::playerRound() {
         }
     }
 
+    // if no piece can be moved
+    if (!moveAvailable) {
+        QTimer::singleShot(1000, this, &Ludo::delayedEndRound);
+    }
+}
+
+void Ludo::delayedEndRound() {
+    emit Ludo::endRound();
+}
+
+
+// TESTING
+void Ludo::reset() {
+    this->diceProxy->setVisible(true);
+    for (piece* p : piecesBlue) {
+        p->setFlag(QGraphicsItem::ItemIsMovable, false);
+    }
 }

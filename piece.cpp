@@ -1,14 +1,17 @@
 #include "piece.h"
 
-QGraphicsPixmapItem* piece::promptDot = nullptr;
+QGraphicsPixmapItem* Piece::promptDot = nullptr;
+SignalEmitter* Piece::emitter = nullptr;
 
-piece::piece(const QPixmap& icon) :
-	QGraphicsPixmapItem{icon} {
-
+Piece::Piece(const QPixmap& icon, const QPointF& coordCurr, const int indexCurr, const QPointF& coordNext, 
+		const int indexNext, const ludoConstants::status status, const int moveRolled) :
+		QGraphicsPixmapItem{ icon }, coordCurr{ coordCurr }, indexCurr{ indexCurr }, coordNext{ coordNext },
+		indexNext{ indexNext }, status{ status }, moveRolled{ moveRolled } {
+	this->setPos(coordCurr);
 };
 
 
-void piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
+void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 
 	// hide prompt after movement
 	promptDot->setVisible(false);
@@ -34,7 +37,7 @@ void piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 			this->status = ludoConstants::status::AIRBORNE;
 		}
 		// case 4: piece is airborne and enters final approach, set status to final approach
-		else if (this->status == ludoConstants::status::FINAL_APPROACH && this->indexNext >= 100) {
+		else if (this->status == ludoConstants::status::AIRBORNE && this->indexNext >= 100) {
 			this->status = ludoConstants::status::FINAL_APPROACH;
 		}
 
@@ -46,7 +49,7 @@ void piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 		this->setPos(coordCurr);
 
 		// emit round end signal
-		emit endRound();
+		emit emitter->endRound();
 	}
 	// piece movement not confirmed
 	else {
@@ -57,99 +60,119 @@ void piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 	QGraphicsPixmapItem::mouseReleaseEvent(event);
 }
 
-void piece::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-	
-	ludoConstants::status pieceStatus = this->getStatus();
+void Piece::mousePressEvent(QGraphicsSceneMouseEvent* event) {
+	if (this->flags() & QGraphicsItem::ItemIsMovable) {
+		ludoConstants::status pieceStatus = this->getStatus();
 
-	// case 1: piece is grounded and ready to take off
-	if (pieceStatus == ludoConstants::status::GROUNDED) {
-		this->coordNext = this->getTakeoffTileCoord();
-	}
-	// case 2: piece is on the takeoff square
-	else if (pieceStatus == ludoConstants::status::TAKING_OFF) {
-		this->indexNext = this->getInitialTileIndex() + this->moveRolled - 1;
-		this->coordNext = ludoConstants::tilesPublic[indexNext].getCoord();
-	}
-	// case 3: piece is airborne
-	else if (pieceStatus == ludoConstants::status::AIRBORNE) {
-		// piece reaching final approach
-		if (this->indexCurr <= this->getLastPublicTileIndex() &&
-			(this->indexCurr + this->moveRolled) > this->getLastPublicTileIndex()) {
-			int indexFinalApproach = this->indexCurr + this->moveRolled - this->getLastPublicTileIndex() + 100 - 1;
-			this->coordNext = this->getFinalApproachTileCoord(indexFinalApproach);
-			this->indexNext = indexFinalApproach;
+		// case 1: piece is grounded and ready to take off
+		if (pieceStatus == ludoConstants::status::GROUNDED) {
+			this->coordNext = this->getTakeoffTileCoord();
 		}
-		else {
-			this->indexNext = (this->indexCurr + this->moveRolled) % ludoConstants::tilesPublic.size();
+		// case 2: piece is on the takeoff square
+		else if (pieceStatus == ludoConstants::status::TAKING_OFF) {
+			this->indexNext = this->getInitialTileIndex() + this->moveRolled - 1;
 			this->coordNext = ludoConstants::tilesPublic[indexNext].getCoord();
 		}
-	}
-	// case 4: piece is in final approach
-	else if (pieceStatus == ludoConstants::status::FINAL_APPROACH) {
-		// piece overshot
-		if ((this->indexCurr + this->moveRolled) > 105) {
-			indexNext = 105 * 2 - this->indexCurr - this->moveRolled;
+		// case 3: piece is airborne
+		else if (pieceStatus == ludoConstants::status::AIRBORNE) {
+			// piece reaching final approach
+			if (this->indexCurr <= this->getLastPublicTileIndex() &&
+				(this->indexCurr + this->moveRolled) > this->getLastPublicTileIndex()) {
+				int indexFinalApproach = this->indexCurr + this->moveRolled - this->getLastPublicTileIndex() + 100 - 1;
+				this->coordNext = this->getFinalApproachTileCoord(indexFinalApproach);
+				this->indexNext = indexFinalApproach;
+			}
+			// otherwise
+			else {
+				this->indexNext = (this->indexCurr + this->moveRolled) % ludoConstants::tilesPublic.size();
+				this->coordNext = ludoConstants::tilesPublic[indexNext].getCoord();
+			}
 		}
-		else {
-			this->indexNext = (this->indexCurr + this->moveRolled);
+		// case 4: piece is in final approach
+		else if (pieceStatus == ludoConstants::status::FINAL_APPROACH) {
+			// piece overshot
+			if ((this->indexCurr + this->moveRolled) > 105) {
+				indexNext = 105 * 2 - this->indexCurr - this->moveRolled;
+			}
+			// otherwise 
+			else {
+				this->indexNext = (this->indexCurr + this->moveRolled);
+			}
+			this->coordNext = this->getFinalApproachTileCoord(indexNext);
 		}
-		this->coordNext = this->getFinalApproachTileCoord(indexNext);
+		// does not need to check if piece is complete since complete piece cannot be set to movable
+
+		// set the prompt to the next coordinate and make it visible
+		promptDot->setPos(this->coordNext.x() + 5, this->coordNext.y() + 5);
+		promptDot->setVisible(true);
 	}
-	// does not need to check if piece is complete since complete piece cannot be set to movable
-
-	// set the prompt to the next coordinate and make it visible
-	promptDot->setPos(this->coordNext.x() + 5, this->coordNext.y() + 5);
-	promptDot->setVisible(true);
-
 	// parent class implementation
 	QGraphicsPixmapItem::mousePressEvent(event);	
 }
 
-void piece::setIndexCurr(const int indexCurr) {
+void Piece::setIndexCurr(const int indexCurr) {
 	this->indexCurr = indexCurr;
 }
 
-void piece::setMoveRolled(const int moveRolled) {
+void Piece::setMoveRolled(const int moveRolled) {
 	this->moveRolled = moveRolled;
 }
 
-void piece::setStatus(const ludoConstants::status status) {
+void Piece::setStatus(const ludoConstants::status status) {
 	this->status = status;
 }
 
-int piece::getIndexCurr() const {
+int Piece::getIndexCurr() const {
 	return indexCurr;
 }
 
-int piece::getMoveRolled() const {
+int Piece::getMoveRolled() const {
 	return moveRolled;
 }
 
-ludoConstants::status piece::getStatus() const {
+ludoConstants::status Piece::getStatus() const {
 	return status;
 }
 
 
 
-pieceBlue::pieceBlue(const QPixmap& icon) :
-	piece{ icon } {};
+PieceBlue::PieceBlue(const QPixmap& icon) :
+	Piece{ icon } {};
 
-char pieceBlue::getColor() const {
+char PieceBlue::getColor() const {
 	return 'b';
 }
 
-QPointF pieceBlue::getTakeoffTileCoord() const {
+QPointF PieceBlue::getTakeoffTileCoord() const {
 	return ludoConstants::COORD_TAKEOFF_BLUE;
 }
 
-int pieceBlue::getInitialTileIndex() const {
+int PieceBlue::getInitialTileIndex() const {
 	return ludoConstants::INITIAL_BLUE;
 }
 
-int pieceBlue::getLastPublicTileIndex() const {
+int PieceBlue::getLastPublicTileIndex() const {
 	return ludoConstants::LAST_PUBLIC_BLUE;
 }
 
-QPointF pieceBlue::getFinalApproachTileCoord(const int& indexFinal) const {
+QPointF PieceBlue::getFinalApproachTileCoord(const int& indexFinal) const {
 	return ludoConstants::tilesFinalBlue[indexFinal - 100];
+}
+
+bool PieceBlue::checkJump() {
+	// if the tile is blue and is not the final tile before final approach
+	if (ludoConstants::tilesPublic[this->indexCurr].getColor() == 'b' &&
+		this->indexCurr != ludoConstants::LAST_PUBLIC_BLUE) {
+		// for loop to find the next blue tile
+		for (int i = indexCurr + 1; ; ++i) {
+			// if 
+			if (i == ludoConstants::tilesPublic.size()) {
+				i = 0;
+			}
+			if (ludoConstants::tilesPublic[i].getColor() == 'b') {
+
+			}
+		}
+	}
+	return true;
 }

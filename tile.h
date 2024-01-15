@@ -6,12 +6,12 @@
 
 #include <QPointF>
 
-class tile {
+class Tile {
 	char color;
 	QPointF coord;
 
 public:
-	tile(const char color, const QPointF& coord);
+	Tile(const char color, const QPointF& coord);
 	char getColor() const;
 	QPointF getCoord() const;
 };

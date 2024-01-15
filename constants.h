@@ -3,7 +3,7 @@
 #include <vector>
 #include <QPointF>
 
-#include "tile.h"
+#include "Tile.h"
 
 
 namespace ludoConstants {
@@ -17,7 +17,7 @@ namespace ludoConstants {
 	extern const QPointF COORD_TAKEOFF_YELLOW;
 
 	// coordinates of all public tiles
-	extern const std::vector<tile> tilesPublic;
+	extern const std::vector<Tile> tilesPublic;
 
 	// coordinates of all final approach tiles
 	extern const std::vector<QPointF> tilesFinalBlue;

@@ -8,9 +8,11 @@
 #include <QGraphicsProxyWidget>
 #include <QRandomGenerator>
 #include <QTimer>
+#include <string>
 #include "ui_Ludo.h"
 
-#include "piece.h"
+#include "Piece.h"
+#include "SignalEmitter.h"
 #include "constants.h"
 
 QT_BEGIN_NAMESPACE
@@ -39,7 +41,7 @@ private slots:
 private:
     Ui::LudoClass *ui;
     int numRound, numPlayer;
-    std::vector<piece*> piecesBlue, piecesGreen, piecesRed, piecesYellow;
+    std::vector<Piece*> piecesBlue, piecesGreen, piecesRed, piecesYellow;
 
     QGraphicsScene* graphicsSceneBoard;
     QGraphicsProxyWidget* diceProxy;

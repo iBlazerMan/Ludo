@@ -24,6 +24,8 @@ Ludo::Ludo(QWidget *parent)
     diceProxy = graphicsSceneBoard->addWidget(buttonDice);
     diceProxy->setPos(210, 210);
 
+    connect(buttonDice, &QPushButton::clicked, this, &Ludo::playerRound);
+
     // create dot prompt
     QGraphicsPixmapItem* promptDot = new QGraphicsPixmapItem(QPixmap(":/Ludo/resource/dotBlack.png").scaled
         (10, 10, Qt::KeepAspectRatio, Qt::SmoothTransformation));
@@ -31,11 +33,11 @@ Ludo::Ludo(QWidget *parent)
     graphicsSceneBoard->addItem(promptDot);
     promptDot->setOpacity(0.6);
     promptDot->setVisible(false);
-
     // add dot prompt pointer to piece class:
-    piece::promptDot = promptDot;
+    Piece::promptDot = promptDot;
 
-    connect(buttonDice, &QPushButton::clicked, this, &Ludo::playerRound);
+    // initialize shared signal emitter for Piece class:
+    Piece::emitter = new SignalEmitter(this);
 
     // smooth rendering
     ui->graphicsViewBoard->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -46,20 +48,23 @@ Ludo::Ludo(QWidget *parent)
     // TESTING: adding blue piece
     QPixmap pieceBlueIcon = QPixmap(":/Ludo/resource/piece_blue/piece_blue.png").scaled
         (21, 21, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    pieceBlue* pieceBlue1 = new pieceBlue(pieceBlueIcon);
-    pieceBlue1->setPos(87, 448);
-    pieceBlue1->setStatus(ludoConstants::status::GROUNDED);
+    PieceBlue* pieceBlue1 = new PieceBlue(pieceBlueIcon);
     graphicsSceneBoard->addItem(pieceBlue1);   
     piecesBlue.push_back(pieceBlue1);
 
     connect(this, &Ludo::endRound, this, &Ludo::reset);
-    connect(pieceBlue1, &piece::endRound, this, &Ludo::reset);
+    connect(Piece::emitter, &SignalEmitter::endRound, this, &Ludo::reset);
 }
 
 Ludo::~Ludo()
 {
     delete ui;
+    // delete graphics scence display, also chain
+    delete this->graphicsSceneBoard;
+
+    delete Piece::promptDot;
 }
+
 
 void Ludo::playerRound() {
     // hide dice
@@ -67,15 +72,18 @@ void Ludo::playerRound() {
 
     // TODO: Change this to the selector
     // 
-    std::vector<piece*>& playerPieces = piecesBlue;
+    std::vector<Piece*>& playerPieces = piecesBlue;
 
     // roll a random number between 1 and 6
     int numRolled = QRandomGenerator::global()->bounded(1, 7);
     bool moveAvailable = false;
     bool takeoffAvailable = true;
 
+    // output number rolled to interaction log
+    ui->interactionLog->setText("You rolled a " + QString::number(numRolled) + "!\n");
+
     // iterate through the piece vector and check if any pieces are available to move
-    for (piece* p : playerPieces) {
+    for (Piece* p : playerPieces) {
         // enable all pieces that can move
         if (p->getStatus() != ludoConstants::status::COMPLETED && 
             p->getStatus() != ludoConstants::status::GROUNDED) {
@@ -96,7 +104,8 @@ void Ludo::playerRound() {
 
     // if no piece can be moved
     if (!moveAvailable) {
-        QTimer::singleShot(1000, this, &Ludo::delayedEndRound);
+        QTimer::singleShot(1500, this, &Ludo::delayedEndRound);
+        ui->interactionLog->setText(ui->interactionLog->text() + "\nNo move available!\n");
     }
 }
 
@@ -108,7 +117,7 @@ void Ludo::delayedEndRound() {
 // TESTING
 void Ludo::reset() {
     this->diceProxy->setVisible(true);
-    for (piece* p : piecesBlue) {
+    for (Piece* p : piecesBlue) {
         p->setFlag(QGraphicsItem::ItemIsMovable, false);
     }
 }

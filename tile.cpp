@@ -1,12 +1,12 @@
 #include "tile.h"
 
-tile::tile(const char color, const QPointF& coord) :
+Tile::Tile(const char color, const QPointF& coord) :
 	color{ color }, coord{ coord } {};
 
-char tile::getColor() const {
+char Tile::getColor() const {
 	return color;
 }
 
-QPointF tile::getCoord() const {
+QPointF Tile::getCoord() const {
 	return coord;
 }

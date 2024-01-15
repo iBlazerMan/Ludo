@@ -90,9 +90,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="constants.cpp" />
-    <ClCompile Include="piece.cpp" />
-    <QtMoc Include="piece.h" />
-    <ClCompile Include="tile.cpp" />
+    <ClCompile Include="Piece.cpp" />
+    <ClInclude Include="Piece.h" />
+    <ClCompile Include="SignalEmmiter.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <QtRcc Include="Ludo.qrc" />
     <QtUic Include="Ludo.ui" />
     <QtMoc Include="Ludo.h" />
@@ -103,7 +104,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
-    <ClInclude Include="tile.h" />
+    <QtMoc Include="SignalEmitter.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

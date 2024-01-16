@@ -1,7 +1,10 @@
 # Ludo
 
 <h2>Overview</h2>  
-    Ludo is a board game of 1-4 players, and the player's objective is to move all of their pieces from the start to the final tile before anyone else. This variation includes unique features including jumps, flights, knockbacks, fortresses and more, introducing strategies to the game. 
+    Ludo is a board game of 1-4 players, and the player's objective is to move all of their pieces from the start to the final tile before anyone else. This variation includes unique features including jumps, flights, knockbacks, fortresses and more, introducing strategies to the game.  
+
+<h2>Controls</h2>  
+    Click on the dice in the center of the board to roll it, and drag a piece that is allowed to move to the available tile to move it.
 
 <h2>Rules and Features</h2>  
     All players start with the same number of pieces(planes) in their hangar. Every round, each player gets to roll a six-sided die once, and they must choose from two options: move a piece from the hanger to the runway, which can only be done if a 6 is rolled, or move a piece that is already airborne(on the board) clockwise the number of spaces indicated by the die. If no pieces are available to move and a 6 is not rolled, the player passes their round without any action.  
@@ -21,7 +24,8 @@
 <h3>Fortress</h3>  
     If a player has 2 or more pieces landed on the same tile, that tile becomes a fortress, and no other piece may go over it (either by moving or jumping, flying is still allowed). However, if another player's piece lands on the same tile as the fortress, all pieces including the pieces in the fortress and the piece that landed on it will be sent back to the hanger.  
 
-The game is currently incomplete and still being worked on, and only a multiplayer demo is available. More features and a single-player mode with various levels of difficulty will be implemented in the future
+
+The game is currently incomplete and still being worked on, and only a multiplayer demo is available. More features and a single-player mode with various levels of difficulty will be implemented in the future.
     
 <h3>artwork credits:</h3>  
     Dice icon: <a href="https://www.flaticon.com/free-icons/dice" title="dice icons">Dice icons created by Nsit - Flaticon</a>

@@ -13,16 +13,20 @@
     When a player's piece has gone around the board and reached the center arrow corresponding to their color, the piece will turn into the arrow and enter the final approach stage. Here, they must throw the exact number needed for the piece to get to the final tile in order to complete the run for that piece. If the number thrown is too low, the piece will approach the final tile as normal. If the number is too high, the piece will bounce back from the final tile for as many surplus moves as there are (e.g. if the piece is 1 tile away from the final tile and a 5 is thrown, the piece will reach the final tile first, and go back 5-1=4 tiles due to the surplus and is now 4 tiles away from the final tile). If the exact number is thrown, the piece's run is completed and is no longer movable. No piece is allowed to enter the center arrow of a different color.  
 
 <h3>Jump</h3>  
-    If a player's piece lands on a tile with the same color as the piece, it will jump to the next tile of that color. There are no jumps in the final approach stage.  
+    If a player's piece lands on a tile with the same color as the piece, it will jump to the next tile of that color. There are no jumps in the final approach stage. 
+    <i>Plans for implementing animation using QPropertyAnimation.</i>  
 
 <h3>Flight</h3>
-    If a player's piece lands on their color's flight tile (the tile that has arrows pointing across the board), their piece will take a shortcut and fly to the other side of the flight path.  
+    If a player's piece lands on their color's flight tile (the tile that has arrows pointing across the board), their piece will take a shortcut and fly to the other side of the flight path.
+    <i>Plans for implementing animation using QPropertyAnimation.</i>  
 
 <h3>Knockback</h3>  
-    If a player's piece lands on the same tile as another player's piece (whether by moving, jumping or flying), if the other player only has 1 piece on that tile, their piece is sent back to the hanger, and must take off again by rolling a 6 and redo the entire course.  
+    If a player's piece lands on the same tile as another player's piece (whether by moving, jumping or flying), if the other player only has 1 piece on that tile, their piece is sent back to the hanger, and must take off again by rolling a 6 and redo the entire course.
+    <i>Will be implemented in the future.</i>  
 
 <h3>Fortress</h3>  
-    If a player has 2 or more pieces landed on the same tile, that tile becomes a fortress, and no other piece may go over it (either by moving or jumping, flying is still allowed). However, if another player's piece lands on the same tile as the fortress, all pieces including the pieces in the fortress and the piece that landed on it will be sent back to the hanger. <br><br>
+    If a player has 2 or more pieces landed on the same tile, that tile becomes a fortress, and no other piece may go over it (either by moving or jumping, flying is still allowed). However, if another player's piece lands on the same tile as the fortress, all pieces including the pieces in the fortress and the piece that landed on it will be sent back to the hanger. 
+    <i>Will be implemented in the future.</i>  <br><br>
     
 *The game is currently incomplete and still being worked on, and only a multiplayer demo is available. More features and a single-player mode with various levels of difficulty will be implemented in the future.*
     

@@ -22,7 +22,7 @@
     If a player's piece lands on the same tile as another player's piece (whether by moving, jumping or flying), if the other player only has 1 piece on that tile, their piece is sent back to the hanger, and must take off again by rolling a 6 and redo the entire course.  
 
 <h3>Fortress</h3>  
-    If a player has 2 or more pieces landed on the same tile, that tile becomes a fortress, and no other piece may go over it (either by moving or jumping, flying is still allowed). However, if another player's piece lands on the same tile as the fortress, all pieces including the pieces in the fortress and the piece that landed on it will be sent back to the hanger. 
+    If a player has 2 or more pieces landed on the same tile, that tile becomes a fortress, and no other piece may go over it (either by moving or jumping, flying is still allowed). However, if another player's piece lands on the same tile as the fortress, all pieces including the pieces in the fortress and the piece that landed on it will be sent back to the hanger. <br>
     
     
    The game is currently incomplete and still being worked on, and only a multiplayer demo is available. More features and a single-player mode with various levels of difficulty will be implemented in the future.

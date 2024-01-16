@@ -25,16 +25,22 @@ namespace ludoConstants {
 	extern const std::vector<QPointF> tilesFinalRed;
 	extern const std::vector<QPointF> tilesFinalYellow;
 
+	// coordinate of all hanger tiles 
+	extern const std::vector<QPointF> tilesSpawnBlue;
+	extern const std::vector<QPointF> tilesSpawnGreen;
+	extern const std::vector<QPointF> tilesSpawnRed;
+	extern const std::vector<QPointF> tilesSpawnYellow;
+
 	// indexes of all tiles involved in a flight
 	enum tileFlightIndex {
 		FLIGHT_YELLOW_DEPART = 4,
 		FLIGHT_BLUE_DEPART = 17,
-		FLIGHT_GREEN_DEPART,
-		FLIGHT_RED_DEPART,
-		FLIGHT_YELLOW_ARRIVE,
-		FLIGHT_BLUE_ARRIVE,
-		FLIGHT_GREEN_ARRIVE,
-		FLIGHT_RED_ARRIVE
+		FLIGHT_GREEN_DEPART = 30,
+		FLIGHT_RED_DEPART = 43,
+		FLIGHT_YELLOW_ARRIVE = 16,
+		FLIGHT_BLUE_ARRIVE = 29,
+		FLIGHT_GREEN_ARRIVE = 42,
+		FLIGHT_RED_ARRIVE = 3
 	};
 
 	// indexes of all color pieces' first tile they travel to upon taking off

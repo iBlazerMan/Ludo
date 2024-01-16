@@ -31,8 +31,9 @@
 *.out
 *.app
 
-*.user
+# Additional irrelevent files
 *.aps
+*.vcxproj.user
 
 /x64/
 /.vs/

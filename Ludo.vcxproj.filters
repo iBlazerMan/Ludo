@@ -75,4 +75,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore">
+      <Filter>Translation Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

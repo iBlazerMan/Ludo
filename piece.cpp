@@ -10,16 +10,14 @@ Piece::Piece(const QPixmap& icon, const QPointF& coordCurr, const int indexCurr,
 	this->setPos(coordCurr);
 };
 
-
+// drop and snap logic
 void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 
 	// hide prompt after movement
 	promptDot->setVisible(false);
-
 	
 	// get mouse release point
 	QPointF release = this->pos();
-
 	qreal distance = QLineF(release, this->coordNext).length();
 
 	// if piece movement is confirmed
@@ -45,6 +43,11 @@ void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 		this->indexCurr = this->indexNext;
 		this->coordCurr = this->coordNext;
 		
+		// check jumpa and flight
+		if (!this->checkFlight()) {
+			this->checkJump();
+		}
+
 		// move piece to new coord
 		this->setPos(coordCurr);
 
@@ -135,9 +138,9 @@ ludoConstants::status Piece::getStatus() const {
 }
 
 
-
-PieceBlue::PieceBlue(const QPixmap& icon) :
-	Piece{ icon } {};
+PieceBlue::PieceBlue(const QPixmap& icon, const QPointF& coordCurr, const int indexCurr, 
+	const QPointF& coordNext, const int indexNext, const ludoConstants::status status, const int moveRolled) :
+	Piece{ icon, coordCurr, indexCurr, coordNext, indexNext, status, moveRolled } {}
 
 char PieceBlue::getColor() const {
 	return 'b';
@@ -159,20 +162,92 @@ QPointF PieceBlue::getFinalApproachTileCoord(const int& indexFinal) const {
 	return ludoConstants::tilesFinalBlue[indexFinal - 100];
 }
 
+// TODO: incorporate animation using QPropertyAnimation
+//
 bool PieceBlue::checkJump() {
 	// if the tile is blue and is not the final tile before final approach
-	if (ludoConstants::tilesPublic[this->indexCurr].getColor() == 'b' &&
+	if (this->indexCurr >= 0 && this->indexCurr < ludoConstants::tilesPublic.size() &&
+		ludoConstants::tilesPublic[this->indexCurr].getColor() == 'b' &&
 		this->indexCurr != ludoConstants::LAST_PUBLIC_BLUE) {
 		// for loop to find the next blue tile
 		for (int i = indexCurr + 1; ; ++i) {
-			// if 
+			// check if index surpass last tile, reset to following tile with index 0
 			if (i == ludoConstants::tilesPublic.size()) {
 				i = 0;
 			}
+			// next same-color tile found
 			if (ludoConstants::tilesPublic[i].getColor() == 'b') {
-
+				this->indexCurr = i;
+				this->coordCurr = ludoConstants::tilesPublic[i].getCoord();
+				break;
 			}
 		}
+		return true;
 	}
-	return true;
+	return false;
+}
+
+bool PieceBlue::checkFlight() {
+	if (this->indexCurr == ludoConstants::FLIGHT_BLUE_DEPART) {
+		this->indexCurr = ludoConstants::FLIGHT_BLUE_ARRIVE;
+		this->coordCurr = ludoConstants::tilesPublic[this->indexCurr].getCoord();
+		return true;
+	}
+	return false;
+}
+
+PieceRed::PieceRed(const QPixmap& icon, const QPointF& coordCurr, const int indexCurr,
+	const QPointF& coordNext, const int indexNext, const ludoConstants::status status, const int moveRolled) :
+	Piece{ icon, coordCurr, indexCurr, coordNext, indexNext, status, moveRolled } {}
+
+char PieceRed::getColor() const {
+	return 'r';
+}
+
+QPointF PieceRed::getTakeoffTileCoord() const {
+	return ludoConstants::COORD_TAKEOFF_RED;
+}
+
+int PieceRed::getInitialTileIndex() const {
+	return ludoConstants::INITIAL_RED;
+}
+
+int PieceRed::getLastPublicTileIndex() const {
+	return ludoConstants::LAST_PUBLIC_RED;
+}
+
+QPointF PieceRed::getFinalApproachTileCoord(const int& indexFinal) const {
+	return ludoConstants::tilesFinalRed[indexFinal - 100];
+}
+
+bool PieceRed::checkJump() {
+	// if the tile is blue and is not the final tile before final approach
+	if (this->indexCurr >= 0 && this->indexCurr < ludoConstants::tilesPublic.size() &&
+		ludoConstants::tilesPublic[this->indexCurr].getColor() == 'r' &&
+		this->indexCurr != ludoConstants::LAST_PUBLIC_RED) {
+		// for loop to find the next blue tile
+		for (int i = indexCurr + 1; ; ++i) {
+			// check if index surpass last tile, reset to following tile with index 0
+			if (i == ludoConstants::tilesPublic.size()) {
+				i = 0;
+			}
+			// next same-color tile found
+			if (ludoConstants::tilesPublic[i].getColor() == 'r') {
+				this->indexCurr = i;
+				this->coordCurr = ludoConstants::tilesPublic[i].getCoord();
+				break;
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool PieceRed::checkFlight() {
+	if (this->indexCurr == ludoConstants::FLIGHT_RED_DEPART) {
+		this->indexCurr = ludoConstants::FLIGHT_RED_ARRIVE;
+		this->coordCurr = ludoConstants::tilesPublic[this->indexCurr].getCoord();
+		return true;
+	}
+	return false;
 }

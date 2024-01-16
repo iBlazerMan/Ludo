@@ -55,7 +55,9 @@
        </font>
       </property>
       <property name="text">
-       <string>Welcome to Ludo!</string>
+       <string>Welcome to Ludo! Roll the dice to begin!
+
+Blue's turn</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignHCenter|Qt::AlignTop</set>

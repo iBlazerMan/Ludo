@@ -99,6 +99,7 @@
     <QtMoc Include="Ludo.h" />
     <ClCompile Include="Ludo.cpp" />
     <ClCompile Include="main.cpp" />
+    <None Include=".gitignore" />
     <None Include="Ludo.ico" />
     <ResourceCompile Include="Ludo.rc" />
   </ItemGroup>

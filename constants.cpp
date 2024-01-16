@@ -86,12 +86,26 @@ namespace ludoConstants {
 	};
 
 	const std::vector<QPointF>tilesFinalRed = {
-		QPointF(),
-		QPointF(),
-		QPointF(),
-		QPointF(),
-		QPointF(),
-		QPointF()
+		QPointF(239, 73),
+		QPointF(239, 100),
+		QPointF(239, 128),
+		QPointF(239, 156),
+		QPointF(239, 182),
+		QPointF(239, 211)
+	};
+
+	const std::vector<QPointF>tilesSpawnBlue = {
+		QPointF(86, 447),
+		QPointF(31, 447),
+		QPointF(86, 391),
+		QPointF(31, 391)
+	};
+
+	const std::vector<QPointF>tilesSpawnRed = {
+		QPointF(391, 31),
+		QPointF(447, 31),
+		QPointF(391, 86),
+		QPointF(447, 86)
 	};
 	
 }

@@ -32,8 +32,7 @@ signals:
 
 public slots:
     void playerRound();
-    // TESTING
-    void reset();
+    void nextRound();
 
 private slots:
     void delayedEndRound();
@@ -42,8 +41,10 @@ private:
     Ui::LudoClass *ui;
     int numRound, numPlayer;
     std::vector<Piece*> piecesBlue, piecesGreen, piecesRed, piecesYellow;
-
+    // TODO: possibly change to a vector that stores all vectors of pieces instead?
+    std::vector<Piece*>* piecesCurr;
     QGraphicsScene* graphicsSceneBoard;
     QGraphicsProxyWidget* diceProxy;
 
+    void initializePieces();
 };

@@ -19,9 +19,8 @@ public:
 	static SignalEmitter* emitter;
 
 	using QGraphicsPixmapItem::QGraphicsPixmapItem;
-	Piece(const QPixmap& icon, const QPointF& coordCurr = QPointF(0, 0), const int indexCurr = -1,
-		const QPointF& coordNext = QPointF(0, 0), const int indexNext = -1, 
-		const ludoConstants::status status = ludoConstants::status::GROUNDED, const int moveRolled = 0);
+	Piece(const QPixmap& icon, const QPointF& coordCurr, const int, const QPointF& coordNext, const int indexNext, 
+		const ludoConstants::status status, const int moveRolled);
 
 	void setIndexCurr(const int indexCurr);
 	void setMoveRolled(const int moveRolled);
@@ -41,28 +40,50 @@ public:
 	virtual int getLastPublicTileIndex() const = 0;
 	// retrieve the coordinate of the corresponding final approach tile with the index given, pure virtual
 	virtual QPointF getFinalApproachTileCoord(const int& indexFinal) const = 0;
-	
-	
+	// check if a jump is available, pure virtual
 	virtual bool checkJump() = 0;
-
-	// virtual void setToSpawn();
+	// check if a flight is available, pure virtual
+	virtual bool checkFlight() = 0;
+	
+	// TODO: Implement setToSpawn for knockback
+	// 
+	//virtual void setToSpawn();
 
 protected:
+	// override mouse press to calculate available position and show dot prompt
 	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	// override mouse release and implement snapping into position logic
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 	
 };
 
-// derived class fo
+// derived classes of each colored piece from abstracr piece parent class
 class PieceBlue : public Piece {
 
 public:
-	PieceBlue(const QPixmap& icon);
+	PieceBlue(const QPixmap& icon, const QPointF& coordCurr = QPointF(0, 0), const int indexCurr = -1,
+		const QPointF& coordNext = QPointF(0, 0), const int indexNext = -1,
+		const ludoConstants::status status = ludoConstants::status::GROUNDED, const int moveRolled = 0);
 	char getColor() const override;
 	QPointF getTakeoffTileCoord() const override;
 	int getInitialTileIndex() const override;
 	int getLastPublicTileIndex() const override;
 	QPointF getFinalApproachTileCoord(const int& indexFinal) const override;
 	bool checkJump() override;
+	bool checkFlight() override;
+};
+
+class PieceRed : public Piece {
+
+public:
+	PieceRed(const QPixmap& icon, const QPointF& coordCurr = QPointF(0, 0), const int indexCurr = -1,
+		const QPointF& coordNext = QPointF(0, 0), const int indexNext = -1,
+		const ludoConstants::status status = ludoConstants::status::GROUNDED, const int moveRolled = 0);
+	char getColor() const override;
+	QPointF getTakeoffTileCoord() const override;
+	int getInitialTileIndex() const override;
+	int getLastPublicTileIndex() const override;
+	QPointF getFinalApproachTileCoord(const int& indexFinal) const override;
+	bool checkJump() override;
+	bool checkFlight() override;
 };

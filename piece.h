@@ -1,7 +1,8 @@
 #pragma once
 
 #include <QGraphicsPixmapItem>
-#include <map>
+#include <QGraphicsItemAnimation>
+#include <QTimeLine>
 
 #include "constants.h"
 #include "Tile.h"
@@ -29,6 +30,9 @@ public:
 	int getIndexCurr() const;
 	int getMoveRolled() const;
 	ludoConstants::status getStatus() const;
+	QPointF getCoordCurr() const;
+
+	void animate(const int duration);
 	
 	// retrieve the color of the piece, pure virtual
 	virtual char getColor() const = 0;

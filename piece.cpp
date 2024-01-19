@@ -42,14 +42,14 @@ void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 		// set coordsCurr to coordsNext, indexCurr to indexNext
 		this->indexCurr = this->indexNext;
 		this->coordCurr = this->coordNext;
+
+		// move piece to new coord
+		this->setPos(coordCurr);
 		
 		// check jumpa and flight
 		if (!this->checkFlight()) {
 			this->checkJump();
-		}
-
-		// move piece to new coord
-		this->setPos(coordCurr);
+		}		
 
 		// emit round end signal
 		emit emitter->endRound();
@@ -137,6 +137,27 @@ ludoConstants::status Piece::getStatus() const {
 	return status;
 }
 
+QPointF Piece::getCoordCurr() const {
+	return coordCurr;
+}
+
+void Piece::animate(const int animationDuration) {
+	QTimeLine* animationTimeLine = new QTimeLine(animationDuration);
+	animationTimeLine->setFrameRange(0, 500);
+	animationTimeLine->setEasingCurve(QEasingCurve::InOutQuad);
+
+	QGraphicsItemAnimation* animation = new QGraphicsItemAnimation;
+	animation->setItem(this);
+	animation->setTimeLine(animationTimeLine);
+
+	animation->setPosAt(0, this->coordCurr);
+	animation->setPosAt(1, this->coordNext);
+
+	QObject::connect(animationTimeLine, &QTimeLine::finished, animationTimeLine, &QObject::deleteLater);
+	QObject::connect(animationTimeLine, &QTimeLine::finished, animation, &QObject::deleteLater);
+
+	animationTimeLine->start();
+}
 
 PieceBlue::PieceBlue(const QPixmap& icon, const QPointF& coordCurr, const int indexCurr, 
 	const QPointF& coordNext, const int indexNext, const ludoConstants::status status, const int moveRolled) :
@@ -177,8 +198,11 @@ bool PieceBlue::checkJump() {
 			}
 			// next same-color tile found
 			if (ludoConstants::tilesPublic[i].getColor() == 'b') {
-				this->indexCurr = i;
-				this->coordCurr = ludoConstants::tilesPublic[i].getCoord();
+				this->indexNext = i;
+				this->coordNext = ludoConstants::tilesPublic[i].getCoord();
+				this->animate(500);
+				this->indexCurr = this->indexNext;
+				this->coordCurr = this->coordNext;
 				break;
 			}
 		}
@@ -189,8 +213,11 @@ bool PieceBlue::checkJump() {
 
 bool PieceBlue::checkFlight() {
 	if (this->indexCurr == ludoConstants::FLIGHT_BLUE_DEPART) {
-		this->indexCurr = ludoConstants::FLIGHT_BLUE_ARRIVE;
-		this->coordCurr = ludoConstants::tilesPublic[this->indexCurr].getCoord();
+		this->indexNext = ludoConstants::FLIGHT_BLUE_ARRIVE;
+		this->coordNext = ludoConstants::tilesPublic[this->indexNext].getCoord();
+		this->animate(1000);
+		this->indexCurr = this->indexNext;
+		this->coordCurr = this->coordNext;
 		return true;
 	}
 	return false;
@@ -233,8 +260,11 @@ bool PieceRed::checkJump() {
 			}
 			// next same-color tile found
 			if (ludoConstants::tilesPublic[i].getColor() == 'r') {
-				this->indexCurr = i;
-				this->coordCurr = ludoConstants::tilesPublic[i].getCoord();
+				this->indexNext = i;
+				this->coordNext = ludoConstants::tilesPublic[i].getCoord();
+				this->animate(500);
+				this->indexCurr = this->indexNext;
+				this->coordCurr = this->coordNext;
 				break;
 			}
 		}
@@ -245,8 +275,11 @@ bool PieceRed::checkJump() {
 
 bool PieceRed::checkFlight() {
 	if (this->indexCurr == ludoConstants::FLIGHT_RED_DEPART) {
-		this->indexCurr = ludoConstants::FLIGHT_RED_ARRIVE;
-		this->coordCurr = ludoConstants::tilesPublic[this->indexCurr].getCoord();
+		this->indexNext = ludoConstants::FLIGHT_RED_ARRIVE;
+		this->coordNext = ludoConstants::tilesPublic[this->indexNext].getCoord();
+		this->animate(1000);
+		this->indexCurr = this->indexNext;
+		this->coordCurr = this->coordNext;
 		return true;
 	}
 	return false;

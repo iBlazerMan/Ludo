@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QObject>
+#include <QPointF>
+
+class Piece;
 
 class SignalEmitter : public QObject {
 	Q_OBJECT
@@ -10,3 +13,5 @@ public:
 signals:
 	void endRound();
 };
+
+

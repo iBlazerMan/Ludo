@@ -64,6 +64,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\wangt\Desktop\Software Projects\In Progress\Ludo\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -89,24 +94,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="constants.cpp" />
-    <ClCompile Include="Piece.cpp" />
-    <ClInclude Include="Piece.h" />
-    <ClCompile Include="SignalEmmiter.cpp" />
-    <ClCompile Include="Tile.cpp" />
+    <ClInclude Include="include\constants.h" />
+    <QtMoc Include="include\Ludo.h" />
+    <QtMoc Include="include\SignalEmitter.h" />
+    <ClInclude Include="include\Piece.h" />
+    <ClInclude Include="include\Tile.h" />
+    <ClCompile Include="source\constants.cpp" />
+    <ClCompile Include="source\Ludo.cpp" />
+    <ClCompile Include="source\Piece.cpp" />
+    <ClCompile Include="source\SignalEmmiter.cpp" />
+    <ClCompile Include="source\Tile.cpp" />
     <QtRcc Include="Ludo.qrc" />
     <QtUic Include="Ludo.ui" />
-    <QtMoc Include="Ludo.h" />
-    <ClCompile Include="Ludo.cpp" />
     <ClCompile Include="main.cpp" />
     <None Include=".gitignore" />
     <None Include="Ludo.ico" />
     <ResourceCompile Include="Ludo.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="constants.h" />
-    <QtMoc Include="SignalEmitter.h" />
-    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

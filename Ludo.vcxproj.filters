@@ -29,12 +29,6 @@
     <QtUic Include="Ludo.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtMoc Include="Ludo.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="Ludo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <None Include="Ludo.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -46,32 +40,38 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Piece.cpp">
+    <ClCompile Include="source\constants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
+    <ClCompile Include="source\Ludo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="constants.cpp">
+    <ClCompile Include="source\Piece.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SignalEmmiter.cpp">
+    <ClCompile Include="source\SignalEmmiter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="constants.h">
+    <ClInclude Include="include\constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
+    <ClInclude Include="include\Piece.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Piece.h">
+    <ClInclude Include="include\SignalEmitter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="SignalEmitter.h">
+    <QtMoc Include="include\Ludo.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -33,18 +33,25 @@ signals:
 public slots:
     void playerRound();
     void nextRound();
+    void checkKnockBack(Piece* p);
 
 private slots:
     void delayedEndRound();
 
 private:
+    // Qt UI class
     Ui::LudoClass *ui;
-    int numRound, numPlayer;
+    // round number, used to determine whose round it is
+    int numRound;
+    // number of players, used for piece generation and determing 
+    int numPlayer;
+    // piece containers for all 4 colors
     std::vector<Piece*> piecesBlue, piecesGreen, piecesRed, piecesYellow;
     // TODO: possibly change to a vector that stores all vectors of pieces instead?
     std::vector<Piece*>* piecesCurr;
     QGraphicsScene* graphicsSceneBoard;
     QGraphicsProxyWidget* diceProxy;
 
+    // initialize and setup pieces based on the number of players
     void initializePieces();
 };

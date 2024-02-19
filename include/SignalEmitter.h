@@ -12,6 +12,5 @@ public:
 
 signals:
 	void endRound();
+	void checkKnockback(Piece* p);
 };
-
-

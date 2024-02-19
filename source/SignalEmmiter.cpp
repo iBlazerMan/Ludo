@@ -2,4 +2,3 @@
 
 SignalEmitter::SignalEmitter(QObject* parent) :
 	QObject{ parent } {}
-

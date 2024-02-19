@@ -54,6 +54,7 @@ Ludo::Ludo(QWidget *parent)
     // signal connection
     connect(this, &Ludo::endRound, this, &Ludo::nextRound);
     connect(Piece::emitter, &SignalEmitter::endRound, this, &Ludo::nextRound);
+    connect(Piece::emitter, &SignalEmitter::checkKnockback, this, &Ludo::checkKnockBack);
 }
 
 Ludo::~Ludo()
@@ -73,9 +74,8 @@ void Ludo::playerRound() {
     // roll a random number between 1 and 6
     int numRolled = QRandomGenerator::global()->bounded(1, 7);
     bool moveAvailable = false;
-    
-    // NEEDED?
-    bool takeoffAvailable = true;
+    // update piece's numRolled
+    Piece::setNumRolled(numRolled);
 
     // output number rolled to interaction log
     ui->interactionLog->setText("You rolled a " + QString::number(numRolled) + "!\n");
@@ -85,9 +85,8 @@ void Ludo::playerRound() {
         // enable all pieces that can move
         if (p->getStatus() != ludoConstants::status::COMPLETED && 
             p->getStatus() != ludoConstants::status::GROUNDED) {
-            // set piece to movable and update the number rolled
+            // set piece to movable
             p->setFlag(QGraphicsItem::ItemIsMovable);
-            p->setMoveRolled(numRolled);
             // set movement available to true
             moveAvailable = true;
         }
@@ -95,7 +94,6 @@ void Ludo::playerRound() {
         else if (p->getStatus() == ludoConstants::status::GROUNDED &&
             numRolled == 6) {
             p->setFlag(QGraphicsItem::ItemIsMovable);
-            takeoffAvailable = false;
             moveAvailable = true;
         }
     }
@@ -116,41 +114,35 @@ void Ludo::initializePieces() {
     QPixmap pieceBlueIcon = QPixmap(":/Ludo/resource/piece_blue/piece_blue.png").scaled
     (21, 21, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    PieceBlue* pieceBlue1 = new PieceBlue(pieceBlueIcon, ludoConstants::tilesSpawnBlue[0]);
+    // blue pieces
+    PieceBlue* pieceBlue1 = new PieceBlue(pieceBlueIcon, 0);
     this->graphicsSceneBoard->addItem(pieceBlue1);
     this->piecesBlue.push_back(pieceBlue1);
-
-    PieceBlue* pieceBlue2 = new PieceBlue(pieceBlueIcon, ludoConstants::tilesSpawnBlue[1]);
+    PieceBlue* pieceBlue2 = new PieceBlue(pieceBlueIcon, 1);
     this->graphicsSceneBoard->addItem(pieceBlue2);
     this->piecesBlue.push_back(pieceBlue2);
-
-    PieceBlue* pieceBlue3 = new PieceBlue(pieceBlueIcon, ludoConstants::tilesSpawnBlue[2]);
+    PieceBlue* pieceBlue3 = new PieceBlue(pieceBlueIcon, 2);
     this->graphicsSceneBoard->addItem(pieceBlue3);
     this->piecesBlue.push_back(pieceBlue3);
-
-    PieceBlue* pieceBlue4 = new PieceBlue(pieceBlueIcon, ludoConstants::tilesSpawnBlue[3]);
+    PieceBlue* pieceBlue4 = new PieceBlue(pieceBlueIcon, 3);
     this->graphicsSceneBoard->addItem(pieceBlue4);
     this->piecesBlue.push_back(pieceBlue4);
 
+    // red pieces
     QPixmap pieceRedIcon = QPixmap(":/Ludo/resource/piece_red/piece_red.png").scaled
     (21, 21, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    PieceRed* pieceRed1 = new PieceRed(pieceRedIcon, ludoConstants::tilesSpawnRed[0]);
+    PieceRed* pieceRed1 = new PieceRed(pieceRedIcon, 0);
     this->graphicsSceneBoard->addItem(pieceRed1);
     this->piecesRed.push_back(pieceRed1);
-
-    PieceRed* pieceRed2 = new PieceRed(pieceRedIcon, ludoConstants::tilesSpawnRed[1]);
+    PieceRed* pieceRed2 = new PieceRed(pieceRedIcon, 1);
     this->graphicsSceneBoard->addItem(pieceRed2);
     this->piecesRed.push_back(pieceRed2);
-
-    PieceRed* pieceRed3 = new PieceRed(pieceRedIcon, ludoConstants::tilesSpawnRed[2]);
+    PieceRed* pieceRed3 = new PieceRed(pieceRedIcon, 2);
     this->graphicsSceneBoard->addItem(pieceRed3);
     this->piecesRed.push_back(pieceRed3);
-
-    PieceRed* pieceRed4 = new PieceRed(pieceRedIcon, ludoConstants::tilesSpawnRed[3]);
+    PieceRed* pieceRed4 = new PieceRed(pieceRedIcon, 3);
     this->graphicsSceneBoard->addItem(pieceRed4);
     this->piecesRed.push_back(pieceRed4);
-    
 }
 
 
@@ -173,5 +165,25 @@ void Ludo::nextRound() {
     ++numRound;
     // re-enable dice
     this->diceProxy->setVisible(true);
+}
 
+void Ludo::checkKnockBack(Piece* p) {\
+    // get the color of the piece
+    const char color = p->getColor();
+    // case blue
+    if (color == 'b') {
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesRed, &piecesYellow, &piecesGreen});
+    }
+    // case red
+    else if (color == 'r') {
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesYellow, &piecesGreen});
+    }
+    // case yellow
+    else if (color == 'y') {
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesRed, &piecesGreen});
+    }
+    // case green
+    else if (color == 'g') {
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesRed, &piecesYellow});
+    }
 }

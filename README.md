@@ -31,9 +31,9 @@
 *The game is currently incomplete and still being worked on, and only a multiplayer demo is available. More features and a single-player mode with various levels of difficulty will be implemented in the future.*
     
 <h3>artwork credits:</h3>  
-    <a href="https://www.flaticon.com/free-icons/dice">Dice icons created by Nsit - Flaticon</a>
-    <a href="https://freesound.org/people/simone_ds/sounds/366065/">Move sound effect by simone_ds</a>
-    <a href="https://freesound.org/people/Jagadamba/sounds/387669/">Jump sound effect by Jagadamba</a>
-    <a href="https://freesound.org/people/XfiXy8/sounds/467282/">Knockback sound effect by XfiXy8</a>
+    <a href="https://www.flaticon.com/free-icons/dice">Dice icons created by Nsit - Flaticon</a> <br>
+    <a href="https://freesound.org/people/simone_ds/sounds/366065/">Move sound effect by simone_ds</a> <br>
+    <a href="https://freesound.org/people/Jagadamba/sounds/387669/">Jump sound effect by Jagadamba</a> <br>
+    <a href="https://freesound.org/people/XfiXy8/sounds/467282/">Knockback sound effect by XfiXy8</a> <br>
     <a href="https://freesound.org/people/Matt_G/sounds/30351/">Flight sound effect by Matt_G</a>
         

@@ -37,13 +37,13 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>6.6.1_msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtInstall>6.6.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets;multimedia</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.6.1_msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtInstall>6.6.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets;multimedia</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
@@ -103,11 +103,13 @@
     <QtMoc Include="include\Ludo.h" />
     <QtMoc Include="include\SignalEmitter.h" />
     <ClInclude Include="include\Piece.h" />
+    <QtMoc Include="include\SoundEffectPlayer.h" />
     <ClInclude Include="include\Tile.h" />
     <ClCompile Include="source\constants.cpp" />
     <ClCompile Include="source\Ludo.cpp" />
     <ClCompile Include="source\Piece.cpp" />
     <ClCompile Include="source\SignalEmmiter.cpp" />
+    <ClCompile Include="source\SoundEffectPlayer.cpp" />
     <ClCompile Include="source\Tile.cpp" />
     <QtRcc Include="Ludo.qrc" />
     <QtUic Include="Ludo.ui" />

@@ -3,10 +3,12 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
+#include <QSoundEffect>
 
 #include "constants.h"
 #include "Tile.h"
 #include "SignalEmitter.h"
+#include "SoundEffectPlayer.h"
 
 class Piece : public QGraphicsPixmapItem {
 
@@ -23,6 +25,10 @@ protected:
 	//		set to 0 - 3, first piece initialized is set to 0, increment by 1 for each subsequence piece
 	//		each color has its own set of index
 	int ID;
+	// piece's sound effect index, used to determine the sound effect played after making a move
+	//		should always be assigned using SoundEffetPlayer::sfIndex
+	//		see SoundEffectPlayer.h for documentation
+	unsigned int indexSF;
 	// piece's current coordinate
 	QPointF coordCurr;
 	// piece's next avaiable tile's coordinate
@@ -36,10 +42,11 @@ protected:
 public:
 	static QGraphicsPixmapItem* promptDot;
 	static SignalEmitter* emitter;
+	static SoundEffectPlayer* soundManager;
 
 	using QGraphicsPixmapItem::QGraphicsPixmapItem;
 	Piece(const QPixmap& icon, const int ID, const QPointF& coordCurr, const int indexCurr, const QPointF& coordNext, const int indexNext,
-		const ludoConstants::status status);
+		const ludoConstants::status status, const unsigned int indexSF);
 
 	void setIndexCurr(const int indexCurr);
 	static void setNumRolled(const int numRolled);
@@ -51,6 +58,8 @@ public:
 	static int getNumRolled();
 
 	// performs an animation from coordCurr to CoordNext and update the piece to coordNext and indexNext
+	//		also responsible for checking if knockback is available after the piece is moved to the new tile
+	//		since the knockback should only be performed when the animation finishes
 	void animate(const int duration);
 
 	// retrieve the color of the piece, pure virtual
@@ -78,8 +87,13 @@ public:
 	virtual void setToSpawn() = 0;
 
 	// check if knockback is available and performs the knockback on other piece(s) if applicable
-	//		method must be called from the checkKnockback signal to pass in the other pieces
-	void checkKnockback(std::vector<std::vector<Piece*>*> opponentPieces) const;
+	//		- method must be called from the checkKnockback signal in order to pass in the other piece 
+	//		vectors as parameter
+	//		- the boolean firstCheck is used to determine whether a sound effect should be played since the 
+	//		an additional knockback SF is played if a piece jumps/flys to a new tile and performs another 
+	//		knockback, defaulted to true and set to false when calling checkKnockback a second time in a 
+	//		round after a jump/fly
+	void checkKnockback(std::vector<std::vector<Piece*>*> opponentPieces, const bool firstCheck = true);
 
 protected:
 	// override mouse press to calculate available position and show dot prompt
@@ -96,7 +110,8 @@ class PieceBlue : public Piece {
 public:
 	PieceBlue(const QPixmap& icon, const int ID, const QPointF& coordCurr = QPointF(0, 0), const int indexCurr = -1,
 		const QPointF& coordNext = QPointF(0, 0), const int indexNext = -1,
-		const ludoConstants::status status = ludoConstants::status::GROUNDED);
+		const ludoConstants::status status = ludoConstants::status::GROUNDED, 
+		const unsigned int indexSF = SoundEffectPlayer::move);
 	char getColor() const override;
 	QPointF getTakeoffTileCoord() const override;
 	int getInitialTileIndex() const override;
@@ -112,7 +127,8 @@ class PieceRed : public Piece {
 public:
 	PieceRed(const QPixmap& icon, const int ID, const QPointF& coordCurr = QPointF(0, 0), const int indexCurr = -1,
 		const QPointF& coordNext = QPointF(0, 0), const int indexNext = -1,
-		const ludoConstants::status status = ludoConstants::status::GROUNDED);
+		const ludoConstants::status status = ludoConstants::status::GROUNDED,
+		const unsigned int indexSF = SoundEffectPlayer::move);
 	char getColor() const override;
 	QPointF getTakeoffTileCoord() const override;
 	int getInitialTileIndex() const override;

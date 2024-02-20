@@ -12,8 +12,6 @@
 #include "ui_Ludo.h"
 
 #include "Piece.h"
-#include "SignalEmitter.h"
-#include "constants.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class LudoClass; };
@@ -33,7 +31,7 @@ signals:
 public slots:
     void playerRound();
     void nextRound();
-    void checkKnockBack(Piece* p);
+    void checkKnockBack(Piece* p, bool firstCheck);
 
 private slots:
     void delayedEndRound();
@@ -41,15 +39,17 @@ private slots:
 private:
     // Qt UI class
     Ui::LudoClass *ui;
-    // round number, used to determine whose round it is
-    int numRound;
-    // number of players, used for piece generation and determing 
+    // round number, used to determine which color's round it is
+    unsigned int numRound;
+    // number of players, used for piece generation and determine which color's round it is
     int numPlayer;
     // piece containers for all 4 colors
     std::vector<Piece*> piecesBlue, piecesGreen, piecesRed, piecesYellow;
-    // TODO: possibly change to a vector that stores all vectors of pieces instead?
+    // pointer to the pieces container
     std::vector<Piece*>* piecesCurr;
+    // game board, has ownership to 
     QGraphicsScene* graphicsSceneBoard;
+    // clickable dice widget
     QGraphicsProxyWidget* diceProxy;
 
     // initialize and setup pieces based on the number of players

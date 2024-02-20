@@ -55,6 +55,9 @@
     <ClCompile Include="source\Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\SoundEffectPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\constants.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="include\SignalEmitter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="include\SoundEffectPlayer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

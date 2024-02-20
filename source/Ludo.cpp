@@ -37,8 +37,12 @@ Ludo::Ludo(QWidget *parent)
     promptDot->setVisible(false);
     // add shared dot prompt pointer to Piece class:
     Piece::promptDot = promptDot;
+
     // initialize shared signal emitter for Piece class:
     Piece::emitter = new SignalEmitter(this);
+
+    // initialize shared sound effect player for Piece class:
+    Piece::soundManager = new SoundEffectPlayer(this);
 
     // smooth rendering
     ui->graphicsViewBoard->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -167,23 +171,23 @@ void Ludo::nextRound() {
     this->diceProxy->setVisible(true);
 }
 
-void Ludo::checkKnockBack(Piece* p) {\
+void Ludo::checkKnockBack(Piece* p, bool firstCheck) {
     // get the color of the piece
     const char color = p->getColor();
     // case blue
     if (color == 'b') {
-        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesRed, &piecesYellow, &piecesGreen});
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesRed, &piecesYellow, &piecesGreen}, firstCheck);
     }
     // case red
     else if (color == 'r') {
-        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesYellow, &piecesGreen});
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesYellow, &piecesGreen}, firstCheck);
     }
     // case yellow
     else if (color == 'y') {
-        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesRed, &piecesGreen});
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesRed, &piecesGreen}, firstCheck);
     }
     // case green
     else if (color == 'g') {
-        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesRed, &piecesYellow});
+        p->checkKnockback(std::vector<std::vector<Piece*>*> {&piecesBlue, &piecesRed, &piecesYellow}, firstCheck);
     }
 }

@@ -2,12 +2,13 @@
 
 QGraphicsPixmapItem* Piece::promptDot = nullptr;
 SignalEmitter* Piece::emitter = nullptr;
+SoundEffectPlayer* Piece::soundManager = nullptr;
 int Piece::numRolled = 0;
 
 Piece::Piece(const QPixmap& icon, const int ID, const QPointF& coordCurr, const int indexCurr, const QPointF& coordNext, 
-		const int indexNext, const ludoConstants::status status) :
+		const int indexNext, const ludoConstants::status status, const unsigned int indexSF) :
 		QGraphicsPixmapItem{ icon }, ID{ ID },  coordCurr{ coordCurr }, indexCurr{ indexCurr }, coordNext{ coordNext },
-		indexNext{ indexNext }, status{ status } {};
+		indexNext{ indexNext }, status{ status }, indexSF{ indexSF } {};
 
 // drop and snap logic
 void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
@@ -45,16 +46,22 @@ void Piece::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
 		// move piece to new coord
 		this->setPos(coordCurr);
 		
+		// reset SF index to normal move
+		this->indexSF = SoundEffectPlayer::move;
+
 		// check knockback
-		emit emitter->checkKnockback(this);
+		emit emitter->checkKnockback(this, true);
 
 		// check jump and flight
 		if (!this->checkFlight()) {
 			this->checkJump();
-		}		
+		}	
+
+		// play sound effect
+		Piece::soundManager->playSoundEffect(this->indexSF);
 
 		// emit round end signal
-		emit emitter->endRound();
+		emit Piece::emitter->endRound();
 	}
 	// piece movement not confirmed
 	else {
@@ -161,6 +168,11 @@ void Piece::animate(const int animationDuration) {
 	QObject::connect(animationTimeLine, &QTimeLine::finished, animationTimeLine, &QObject::deleteLater);
 	QObject::connect(animationTimeLine, &QTimeLine::finished, animation, &QObject::deleteLater);
 
+	// since animation is called when performing a jump or a flight, check knockback when the animation is over
+	//		uses a lambda function that emits the checkKnockback signal
+	QObject::connect(animationTimeLine, &QTimeLine::finished, [this]()
+		{emit emitter->checkKnockback(this, false); });
+
 	animationTimeLine->start();
 
 	// update piece coord and index once animation completes
@@ -168,24 +180,37 @@ void Piece::animate(const int animationDuration) {
 	this->indexCurr = this->indexNext;
 }
 
-void Piece::checkKnockback(std::vector<std::vector<Piece*>*> opponentPieces) const {
+void Piece::checkKnockback(std::vector<std::vector<Piece*>*> opponentPieces, bool firstCheck) {\
+	// reset the SF index on the second call (in case where the first call performed a knockback and a 
+	// flight/jump but the new tile the piece lands on does not perform another knockback, a second
+	// knockback sound effect should not be played
+	if (this->indexSF == SoundEffectPlayer::knockback) {
+		this->indexSF = SoundEffectPlayer::move;
+	}
 	// if the piece is on a public tile
 	if (this->indexCurr >= 0 && this->indexCurr <= 51) {
 		for (std::vector<Piece*>* otherColorPieces : opponentPieces) {
 			for (Piece* p : *otherColorPieces) {
-				// set opponent piece back to spawn 
+				// set opponent piece back to spawn if it is on the same tile
 				if (p->indexCurr == this->indexCurr) {
 					p->setToSpawn();
+					// set SF index to knockback
+					this->indexSF = SoundEffectPlayer::knockback;
 				}
 			}
 		}
+	}
+	// play sound effect if it is not the first check performed and the sound effect played is 
+	// the knockback SF
+	if (!firstCheck && this->indexSF == SoundEffectPlayer::knockback) {
+		Piece::soundManager->playSoundEffect(this->indexSF);
 	}
 }
 
 
 PieceBlue::PieceBlue(const QPixmap& icon, const int ID, const QPointF& coordCurr, const int indexCurr, 
-	const QPointF& coordNext, const int indexNext, const ludoConstants::status status) :
-	Piece{ icon, ID, coordCurr, indexCurr, coordNext, indexNext, status} {
+	const QPointF& coordNext, const int indexNext, const ludoConstants::status status, const unsigned int indexSF) :
+	Piece{ icon, ID, coordCurr, indexCurr, coordNext, indexNext, status, indexSF} {
 		this->setToSpawn();
 }
 
@@ -226,6 +251,11 @@ bool PieceBlue::checkJump() {
 			if (ludoConstants::tilesPublic[i].getColor() == 'b') {
 				this->indexNext = i;
 				this->coordNext = ludoConstants::tilesPublic[i].getCoord();
+				// set SF index to jump if current sound effect is not knockback
+				// knockback SF has priority and jump SF is not played if a knockback is performed
+				if (this->indexSF != SoundEffectPlayer::knockback) {
+					this->indexSF = SoundEffectPlayer::jump;
+				}
 				this->animate(500);
 				break;
 			}
@@ -239,6 +269,11 @@ bool PieceBlue::checkFlight() {
 	if (this->indexCurr == ludoConstants::FLIGHT_BLUE_DEPART) {
 		this->indexNext = ludoConstants::FLIGHT_BLUE_ARRIVE;
 		this->coordNext = ludoConstants::tilesPublic[this->indexNext].getCoord();
+		// set SF index to flight if current sound effect is not knockback
+		// knockback SF has priority and flight SF is not played if a knockback is performed
+		if (this->indexSF != SoundEffectPlayer::knockback) {
+			this->indexSF = SoundEffectPlayer::flight;
+		}
 		this->animate(1000);
 		return true;
 	}
@@ -257,8 +292,8 @@ void PieceBlue::setToSpawn() {
 }
 
 PieceRed::PieceRed(const QPixmap& icon, const int ID, const QPointF& coordCurr, const int indexCurr,
-	const QPointF& coordNext, const int indexNext, const ludoConstants::status status) :
-	Piece{ icon, ID, coordCurr, indexCurr, coordNext, indexNext, status } {
+	const QPointF& coordNext, const int indexNext, const ludoConstants::status status, const unsigned int indexSF) :
+	Piece{ icon, ID, coordCurr, indexCurr, coordNext, indexNext, status, indexSF } {
 		this->setToSpawn();
 }
 
@@ -297,10 +332,12 @@ bool PieceRed::checkJump() {
 			if (ludoConstants::tilesPublic[i].getColor() == 'r') {
 				this->indexNext = i;
 				this->coordNext = ludoConstants::tilesPublic[i].getCoord();
+				// set SF index to jump if current sound effect is not knockback
+				// knockback SF has priority and jump SF is not played if a knockback is performed
+				if (this->indexSF != SoundEffectPlayer::knockback) {
+					this->indexSF = SoundEffectPlayer::jump;
+				}
 				this->animate(500);
-				this->indexCurr = this->indexNext;
-				this->coordCurr = this->coordNext;
-				emit emitter->checkKnockback(this);
 				break;
 			}
 		}
@@ -313,10 +350,12 @@ bool PieceRed::checkFlight() {
 	if (this->indexCurr == ludoConstants::FLIGHT_RED_DEPART) {
 		this->indexNext = ludoConstants::FLIGHT_RED_ARRIVE;
 		this->coordNext = ludoConstants::tilesPublic[this->indexNext].getCoord();
+		// set SF index to flight if current sound effect is not knockback
+		// knockback SF has priority and flight SF is not played if a knockback is performed
+		if (this->indexSF != SoundEffectPlayer::knockback) {
+			this->indexSF = SoundEffectPlayer::flight;
+		}
 		this->animate(1000);
-		this->indexCurr = this->indexNext;
-		this->coordCurr = this->coordNext;
-		emit emitter->checkKnockback(this);
 		return true;
 	}
 	return false;

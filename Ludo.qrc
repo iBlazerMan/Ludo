@@ -5,5 +5,9 @@
         <file>resource/dice/diceIso.png</file>
         <file>resource/dotBlack.png</file>
         <file>resource/piece_red/piece_red.png</file>
+        <file>resource/sound/knockback.wav</file>
+        <file>resource/sound/flight.wav</file>
+        <file>resource/sound/jump.wav</file>
+        <file>resource/sound/move.wav</file>
     </qresource>
 </RCC>

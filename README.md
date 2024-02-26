@@ -1,5 +1,9 @@
 # Ludo
 
+<h2>Build Instruction</h2>
+The project is developed with Microsoft Visual Studio and Qt 6.6.2 for msvc. To build, load ``` Ludo.sln ``` into Visual Studio, right click on ``` Ludo ``` in the solution explorer and choose "build".
+> Qt modules ``` Qt Core ```, ``` Qt GUI ```, ``` Qt Widgets ```, and ``` Qt Multimedia ``` version 6.6.2 (or any other compatible version) are required.
+
 <h2>Overview</h2>  
     Ludo is a board game of 1-4 players, and the player's objective is to move all of their pieces from the start to the final tile before anyone else. This variation includes unique features including jumps, flights, knockbacks, fortresses and more, introducing strategies to the game.  
 
@@ -14,15 +18,12 @@
 
 <h3>Jump</h3>  
     If a player's piece lands on a tile with the same color as the piece, it will jump to the next tile of that color. There are no jumps in the final approach stage. 
-    <i>Plans for implementing animation using QPropertyAnimation.</i>  
 
 <h3>Flight</h3>
-    If a player's piece lands on their color's flight tile (the tile that has arrows pointing across the board), their piece will take a shortcut and fly to the other side of the flight path.
-    <i>Plans for implementing animation using QPropertyAnimation.</i>  
+    If a player's piece lands on their color's flight tile (the tile with arrows pointing across the board), their piece will take a shortcut and fly to the other side of the flight path.
 
 <h3>Knockback</h3>  
-    If a player's piece lands on the same tile as another player's piece (whether by moving, jumping or flying), if the other player only has 1 piece on that tile, their piece is sent back to the hanger, and must take off again by rolling a 6 and redo the entire course.
-    <i>Will be implemented in the future.</i>  
+    If a player's piece lands on the same tile as another player's piece (whether by moving, jumping or flying) and the other player only has 1 piece on that tile, their piece is sent back to the hanger and must take off again by rolling a 6 and redo the entire course.
 
 <h3>Fortress</h3>  
     If a player has 2 or more pieces landed on the same tile, that tile becomes a fortress, and no other piece may go over it (either by moving or jumping, flying is still allowed). However, if another player's piece lands on the same tile as the fortress, all pieces including the pieces in the fortress and the piece that landed on it will be sent back to the hanger. 
@@ -30,7 +31,7 @@
     
 *The game is currently incomplete and still being worked on, and only a multiplayer demo is available. More features and a single-player mode with various levels of difficulty will be implemented in the future.*
     
-<h3>artwork credits:</h3>  
+<h2>artwork credits:</h2>  
     <a href="https://www.flaticon.com/free-icons/dice">Dice icons created by Nsit - Flaticon</a> <br>
     <a href="https://freesound.org/people/simone_ds/sounds/366065/">Move sound effect by simone_ds</a> <br>
     <a href="https://freesound.org/people/Jagadamba/sounds/387669/">Jump sound effect by Jagadamba</a> <br>

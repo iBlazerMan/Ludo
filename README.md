@@ -1,8 +1,10 @@
 # Ludo
 
 <h2>Build Instruction</h2>
-The project is developed with Microsoft Visual Studio and Qt 6.6.2 for msvc. To build, load ``` Ludo.sln ``` into Visual Studio, right click on ``` Ludo ``` in the solution explorer and choose "build".
-> Qt modules ``` Qt Core ```, ``` Qt GUI ```, ``` Qt Widgets ```, and ``` Qt Multimedia ``` version 6.6.2 (or any other compatible version) are required.
+
+The project is developed with Microsoft Visual Studio and Qt 6.6.2 for msvc. To build, load `Ludo.sln` into Visual Studio, right-click on `Ludo` in the solution explorer and choose "build".
+
+> Qt modules `Qt Core`, `Qt GUI`, `Qt Widgets`, and `Qt Multimedia` version 6.6.2 (or any other compatible version) are required.
 
 <h2>Overview</h2>  
     Ludo is a board game of 1-4 players, and the player's objective is to move all of their pieces from the start to the final tile before anyone else. This variation includes unique features including jumps, flights, knockbacks, fortresses and more, introducing strategies to the game.  
